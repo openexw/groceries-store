@@ -1,7 +1,6 @@
 package unan
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -24,22 +23,31 @@ func (r *router) POST(path string, handler HandlerFunc) {
 	r.addRoute(http.MethodPost, path, handler)
 }
 
-func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	//url := req.URL.Path
-	//switch url {
-	//case "/":
-	//	fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
-	//case "/ping":
-	//	for k, header := range req.Header {
-	//		fmt.Fprintf(w, "Header[%q] = %q\n", k, header)
-	//	}
-	//default:
-	//	fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
-	//}
-	key := req.Method + ":" + req.URL.Path
+func (r *router) DELETE(path string, handler HandlerFunc) {
+	r.addRoute(http.MethodDelete, path, handler)
+}
+
+func (r *router) PUT(path string, handler HandlerFunc) {
+	r.addRoute(http.MethodPut, path, handler)
+}
+
+func (r *router) PATCH(path string, handler HandlerFunc) {
+	r.addRoute(http.MethodPatch, path, handler)
+}
+
+func (r *router) OPTIONS(path string, handler HandlerFunc) {
+	r.addRoute(http.MethodOptions, path, handler)
+}
+
+func (r *router) HEAD(path string, handler HandlerFunc) {
+	r.addRoute(http.MethodHead, path, handler)
+}
+
+func (r *router) handle(c *Context) {
+	key := c.Method + ":" + c.Path
 	if handler, ok := r.handlers[key]; ok {
-		handler(w, req)
+		handler(c)
 	} else {
-		fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
+		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 	}
 }
