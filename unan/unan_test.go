@@ -15,13 +15,15 @@ func TestNew(t *testing.T) {
 		c.String(http.StatusOK, "ok")
 	})
 
-	g.POST("/user/create", func(c *Context) {
+	g.GET("/user/:id", func(c *Context) {
 		//c.JSON(http.StatusOK, H{
 		//	"code": 200,
 		//	"msg":  "ok",
 		//	"data": struct{}{},
 		//})
-		c.JSON(http.StatusOK, "sdeds")
+		c.JSON(http.StatusOK, H{
+			"id": c.Params["id"],
+		})
 	})
 
 	g.GET("/ping", func(c *Context) {
