@@ -64,34 +64,6 @@ func (r *router) getRouter(method, path string) (*node, map[string]string) {
 	return n, nil
 }
 
-func (r *router) GET(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodGet, path, handler)
-}
-
-func (r *router) POST(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodPost, path, handler)
-}
-
-func (r *router) DELETE(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodDelete, path, handler)
-}
-
-func (r *router) PUT(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodPut, path, handler)
-}
-
-func (r *router) PATCH(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodPatch, path, handler)
-}
-
-func (r *router) OPTIONS(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodOptions, path, handler)
-}
-
-func (r *router) HEAD(path string, handler HandlerFunc) {
-	r.addRoute(http.MethodHead, path, handler)
-}
-
 func (r *router) handle(c *Context) {
 	n, params := r.getRouter(c.Method, c.Path)
 	if n != nil {
