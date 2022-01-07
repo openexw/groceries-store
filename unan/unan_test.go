@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 const (
@@ -47,13 +49,22 @@ func TestNew(t *testing.T) {
 
 }
 
+func onlyForUsers() HandlerFunc {
+	return func(c *Context) {
+		t := time.Now()
+		log.Printf("[%d] %s in %v for group users", c.statusCode, c.req.RequestURI, time.Since(t))
+	}
+}
+
 func setupUnanServe(t *testing.T) {
 	g := New()
+	g.Use(Logger(), Recovery()) // 使用中间件
 	g.GET("/ping", func(c *Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
 	users := g.Group("/users")
+	users.Use(onlyForUsers())
 	users.GET("/:id", func(c *Context) {
 		c.String(http.StatusOK, fmt.Sprintf("info: users/%s", c.Param("id")))
 	})

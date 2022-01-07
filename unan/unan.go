@@ -2,6 +2,7 @@ package unan
 
 import (
 	"net/http"
+	"strings"
 )
 
 type Engine struct {
@@ -32,6 +33,16 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//} else {
 	//	fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
 	//}
+	var middlewares []HandlerFunc
+	for _, group := range e.groups {
+		// 根据 URL 搜索前缀判断是否是同一个 group
+		// 将该 group 下的中间件放进 context 中
+		if strings.HasPrefix(req.URL.Path, group.prefix) {
+			middlewares = append(middlewares, group.middlewares...)
+		}
+	}
 	c := newContext(w, req)
+	c.handlers = middlewares
+
 	e.router.handle(c)
 }

@@ -16,10 +16,28 @@ type Context struct {
 	//handler HandlerFunc
 	Params     map[string]string // 请求参数
 	statusCode int
+
+	// 中间件及本身的函数
+	handlers []HandlerFunc
+	index    int
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
-	return &Context{w: w, req: req, Method: req.Method, Path: req.URL.Path}
+	return &Context{w: w,
+		req:    req,
+		Method: req.Method,
+		Path:   req.URL.Path,
+		index:  -1,
+	}
+}
+
+// Next 中间件 next
+func (c *Context) Next() {
+	c.index++
+	l := len(c.handlers)
+	for ; c.index < l; c.index++ {
+		c.handlers[c.index](c)
+	}
 }
 
 func (c *Context) SetStatusCode(statusCode int) {

@@ -9,6 +9,11 @@ type RouteGroup struct {
 	engine      *Engine
 }
 
+// Use add middleware
+func (group *RouteGroup) Use(middlewares ...HandlerFunc) {
+	group.middlewares = append(group.middlewares, middlewares...)
+}
+
 func (group *RouteGroup) Group(prefix string) *RouteGroup {
 	e := group.engine
 
