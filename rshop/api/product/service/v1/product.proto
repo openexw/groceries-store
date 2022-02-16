@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package product.service.v1;
+
+option go_package = "product/service/v1;v1";
+
+service Product {
+    // get all product
+    rpc ListProduct(ListProductReq) returns (ListProductReply);
+}
+
+message ListProductReq {
+    uint64 page_num = 1;
+    uint64 page_size = 2;
+    uint64 channel = 3;
+}
+
+message ListProductReply {
+    message Product {
+        string product_code = 1;
+        string name = 2;
+        int32 channel = 3;
+        int32 period = 4;
+        int32 wares_type = 5;
+        int32 unit = 6;
+        float total_amount = 7;
+        string desc = 8;
+    }
+    repeated Product products = 1;
+}

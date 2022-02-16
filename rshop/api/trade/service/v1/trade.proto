@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package trade.service.v1;
+
+option go_package = "api/trade/service/v1;v1";
+
+service Trade {
+
+}

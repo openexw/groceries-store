@@ -1,0 +1,13 @@
+server:
+  grpc:
+    addr: :8981
+    timeout: 1s
+
+data:
+  database:
+    driver: mysql
+    source: db_admin:projectx2018@tcp(10.160.5.19:3306)/yx_dt_general?parseTime=true
+  redis:
+    addr: 127.0.0.1:6379
+    read_timeout: 0.2s
+    write_timeout: 0.2s
