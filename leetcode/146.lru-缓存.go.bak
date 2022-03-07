@@ -1,0 +1,125 @@
+package leetcode
+
+/*
+ * @lc app=leetcode.cn id=146 lang=golang
+ *
+ * [146] LRU 缓存
+ */
+
+// @lc code=start
+type LinkedListNode struct {
+	key, value int
+	prev, next *LinkedListNode
+}
+
+type LRUCache struct {
+	capacity   int
+	len        int
+	items      map[int]*LinkedListNode
+	head, tail *LinkedListNode
+}
+
+func Constructor1(capacity int) LRUCache {
+	return LRUCache{
+		capacity: capacity,
+		items:    make(map[int]*LinkedListNode),
+		head:     nil,
+		tail:     nil,
+	}
+}
+
+func (this *LRUCache) Get(key int) int {
+	// 从 map 中获取 value
+	node, ok := this.items[key]
+	if !ok {
+		return -1
+	}
+	// 使用双链表维护访问顺序
+	// 头表示最久访问
+	// 尾表示最近访问
+	this.moveToTail(node)
+	return node.value
+}
+
+func (this *LRUCache) Put(key int, value int) {
+	if node, ok := this.items[key]; ok {
+		// 有值，覆盖
+		node.value = value
+		this.moveToTail(node)
+	} else {
+		newNode := &LinkedListNode{
+			key:   key,
+			value: value,
+		}
+		head := this.head
+		if this.len >= this.capacity {
+			// 删除头结点
+			this.removeNode(this.head)
+			delete(this.items, head.key)
+		}
+		this.addToTail(newNode)
+		this.items[key] = newNode
+	}
+}
+
+func (this *LRUCache) moveToTail(node *LinkedListNode) {
+	this.removeNode(node)
+	this.addToTail(node)
+}
+
+func (this *LRUCache) addToHead(node *LinkedListNode) {
+	node.next = this.head
+	node.prev = nil
+
+	if this.head == nil {
+		this.tail = node
+		this.head = node
+	} else {
+		this.head.prev = node
+		this.head = node
+	}
+	this.len++
+}
+
+func (this *LRUCache) addToTail(node *LinkedListNode) {
+	node.next = nil
+	node.prev = this.tail
+
+	if this.tail == nil {
+		this.tail = node
+		this.head = node
+	} else {
+		this.tail.next = node
+		this.tail = node
+	}
+	this.len++
+}
+
+func (this *LRUCache) removeNode(node *LinkedListNode) *LinkedListNode {
+	// 尾巴节点
+	if node.next == nil && node.prev == nil {
+		this.head = nil
+		this.tail = nil
+	} else if node.next == nil {
+		this.tail = this.tail.prev
+		this.tail.next = nil
+	} else if node.prev == nil {
+		// 头结点
+		this.head = this.head.next
+		this.head.prev = nil
+	} else {
+		node.next.prev = node.prev
+		node.prev.next = node.next
+	}
+
+	this.len--
+	return node
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * obj := Constructor(capacity);
+ * param_1 := obj.Get(key);
+ * obj.Put(key,value);
+ */
+// @lc code=end
