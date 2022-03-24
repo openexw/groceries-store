@@ -1,0 +1,18 @@
+server:
+  grpc:
+    addr: :8981
+    timeout: 1s
+
+data:
+  products: '[{"name":"椰果奶茶","price":10,"type":1,"code":"coconut_milk_tea"},{"name":"西⽶奶茶","price":10,"type":1,"code":"sago_milk_tea"},{"name":"蜂蜜奶茶","price":12,"type":1,"code":"honey_milk_tea"},{"name":"杏仁奶茶","price":14,"type":1,"code":"almond_milk_tea"},{"name":"美式咖啡","price":11,"type":2,"code":"cafe_americano"},{"name":"拿铁咖啡","price":12,"type":2,"code":"cafe_latte"}]'
+  ingredients: '[{"name":"红豆","price":2,"code":"red_bean"},{"name":"芋圆","price":2,"code":"taro_balls"},{"name":"奥利奥奶盖","price":4,"code":"oreo_milk_cover"},{"name":"芝⼠奶盖","price":5,"code":"cheese_milk_cover"}]'
+
+rules:
+  order_max_cnt: 10
+  product_type_rules:
+    milk_tea:
+      rule: "max=1"
+      product_type: 1
+    cafe:
+      rule: "max=1,can_addition=oreo_milk_cover cheese_milk_cover,cant_addition=oreo_milk_cover cheese_milk_cover"
+      product_type: 2

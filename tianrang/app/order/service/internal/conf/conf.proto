@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+
+option go_package = "app/order/service/internal/conf;conf";
+
+// ProductType 饮品类型
+enum ProductType {
+    PRODUCT_TYPE_ZERO = 0;// 默认
+    PRODUCT_TYPE_COFFEE = 1;
+    PRODUCT_TYPE_MILL_TEA = 2;
+}
+// ProductTypeRules 饮品类型
+message ProductTypeRule {
+    string rule = 1;
+    ProductType product_type = 2;
+}
+
+message Rules {
+    // 订单最多饮品数量
+    int32 order_max_cnt = 1;
+    // 单个饮品品种的限制
+    map<string, ProductTypeRule> product_type_rules = 2;
+}
+
+// TODO 生产环境可以保存在 DB、加载到缓存中
+message Data {
+    // 饮品列表
+    string products = 1;
+    // 配料列表
+    string ingredients = 2;
+}
+
+message Server {
+    message Grpc {
+        string addr = 1;
+        google.protobuf.Duration  timeout = 2;
+    }
+    Grpc grpc = 1;
+}
+message Config {
+    Data data = 1;
+    Rules rules = 2;
+    Server server = 3;
+}
